@@ -46,11 +46,18 @@ It outlines the major components of the system, including data storage, views, a
   - A screen where the user inserts a USB drive and enters the master password.
   - Fields: USB status, master password input, login button.
   
+  ![image](https://github.com/user-attachments/assets/d871237b-870c-4c8c-adca-b3f7e08abc72)
+
 - **Password Manager View**:
   - A screen that lists stored passwords and allows the user to manage them (copy, delete, or check if compromised).
 
+![image](https://github.com/user-attachments/assets/6267bc36-aafc-4f68-b9e4-ca0f85f1ddd5)
+
 - **Password Generator View**:
   - Interface for generating new passwords with customizable options (length, symbols, etc.).
+
+![image](https://github.com/user-attachments/assets/6e1b97d6-8e5c-4186-8222-da067157905b)
+
 
 ### 7.2 Main Application Logic
 - **USB Authentication Module**:
