@@ -30,7 +30,7 @@ It outlines the major components of the system, including data storage, views, a
 - Person 1: Frontend development using Electron.js (UI/UX design, password management views).
 - Person 2: Backend development with Python (password encryption, database management, API integration).
 - Person 3: USB authentication module using PyUSB and encryption.
-- Person 4 (Aldrind): Integration of the Have I Been Pwned API and handling API responses.
+- Person 4: Integration of the Have I Been Pwned API and handling API responses.
 
 ## 5. Deployment
 - **Local Deployment**: The app will be deployed as a desktop application using Electron.js. 
