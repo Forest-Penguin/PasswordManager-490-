@@ -27,10 +27,11 @@ It outlines the major components of the system, including data storage, views, a
 - **Pip**: Manages Python libraries for encryption, USB authentication, and database management.
 
 ## 4. Task Assignments
-- Person 1: Frontend development using Electron.js (UI/UX design, password management views).
-- Person 2: Backend development with Python (password encryption, database management, API integration).
-- Person 3: USB authentication module using PyUSB and encryption.
-- Person 4: Integration of the Have I Been Pwned API and handling API responses.
+- **Person 1**: Frontend development using Electron.js (UI/UX design, implementing the Login and Password Manager views).
+- **Person 2**: Backend development with Python (password encryption, SQLite database management).
+- **Person 3**: USB authentication module using PyUSB (handling USB interactions, validating master password on USB).
+- **Person 4**: Integration of the Have I Been Pwned API (password breach checks, handling API responses).
+- **Person 5**: Password generation logic (customizable password generation, integrating it into the UI).
 
 ## 5. Deployment
 - **Local Deployment**: The app will be deployed as a desktop application using Electron.js. 
