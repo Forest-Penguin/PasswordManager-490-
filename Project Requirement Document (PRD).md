@@ -59,7 +59,7 @@ Each team member is responsible for different aspects of the project:
 ### 4.1 System Architecture
 The app follows a modular design, where each component (USB authentication, password management, encryption) is loosely coupled for easier maintenance and scalability.
 
-![System Architecture Diagram](path-to-architecture-diagram.png)
+![System Architecture Diagram](Architecture Design.md)
 
 ### 4.2 Application Views
 - **Login View**:
