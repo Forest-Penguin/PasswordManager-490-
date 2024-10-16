@@ -109,16 +109,10 @@ It outlines the major components of the system, including data storage, views, a
 SELECT * FROM passwords WHERE user_id = ?;
 
 ```
+![image](https://github.com/user-attachments/assets/e93fb89b-995a-476b-b8ae-7553c12d2ec0)
+
 [ArchitectureDesignVisio.pdf](https://github.com/user-attachments/files/17300222/ArchitectureDesignVisio.pdf)
 ![image](https://github.com/user-attachments/assets/f25d36f3-96ed-4b69-a2e5-1c11fd53244c)
-
-[ArchitectureDesign0.1.pdf](https://github.com/user-attachments/files/17300268/ArchitectureDesign0.1.pdf)
-
-![image](https://github.com/user-attachments/assets/287968b5-0a0b-4bd8-9f0e-95b679494044)
-
-[ArchitectureDesign0.2.pdf](https://github.com/user-attachments/files/17300267/ArchitectureDesign0.2.pdf)
-
-![image](https://github.com/user-attachments/assets/2a895385-7043-4301-8d6b-0f95d8da1fe6)
 
 
 
