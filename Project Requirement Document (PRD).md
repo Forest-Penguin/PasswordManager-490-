@@ -1,4 +1,4 @@
-# Project Requirement Document (PRD) - Advanced Version
+# Project Requirement Document (PRD) 
 
 ## Objective
 
