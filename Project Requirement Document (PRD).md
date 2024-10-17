@@ -1,124 +1,148 @@
-# Project Requirement Document (PRD)
+# Project Requirement Document (PRD) - Advanced Version
 
 ## Objective
-Create a comprehensive PRD outlining the architecture and requirements for the **Local Password Manager and Generator** app.
+
+This PRD details the architecture, technical requirements, and roadmap for the development of the **Local Password Manager and Generator** application. It serves as the foundation for aligning the development team on functionality, security, and user experience expectations. The document will be used to guide implementation, testing, and deployment while serving as a living reference that evolves with the project’s lifecycle.
 
 ## 1. Overview
 
-This document outlines the main requirements for the **Local Password Manager and Generator** project. It serves as a key reference point, similar to a contract that would detail the features included in the software. 
+The **Local Password Manager and Generator** app is a secure, local-only tool designed to manage and generate strong passwords for users. It emphasizes privacy by eliminating the need for cloud-based storage, ensuring all sensitive data remains encrypted on the user's device. The app will use cutting-edge encryption standards and offer a variety of user-friendly features such as password strength analysis, compromised password detection, and customizable password generation.
 
-The other part of the contract would cover payment details if this were a client project.
+This document defines the feature set, technical specifications, and deployment strategy for the project, acting as both a roadmap and quality benchmark.
 
 ## 2. Feature Categories
 
-### 2.1 Required Features (Core Functionality)
-- **User Login via USB and Master Password**:
-  - User must insert a USB drive containing an encrypted master password to log in.
-- **Password Management (CRUD)**:
-  - Create, read, update, and delete passwords securely in a local database.
-- **Password Generator**:
-  - Generate strong passwords with customizable parameters (e.g., length, special characters).
-- **Password Security Check**:
-  - Use the Have I Been Pwned API to check if stored passwords have been compromised.
-- **Data Encryption**:
-  - Encrypt all passwords using AES-256 and hash the master password using bcrypt.
+### 2.1 Core Features (MVP Functionality)
 
-### 2.2 Desired Features (Enhancements)
-- **Dark/Light Mode Toggle**:
-  - Add the ability to switch between dark and light themes in the app.
+- **Secure User Authentication via USB and Master Password**:
+  - Users authenticate by inserting a USB device containing an encrypted master key and entering their master password. The system verifies the combination, leveraging multi-factor authentication (MFA) via hardware (USB) and password entry.
+- **Password Management (CRUD Operations)**:
+  - Users can securely create, read, update, and delete (CRUD) passwords stored locally in a fully encrypted database.
+- **Advanced Password Generator**:
+  - A password generator that allows users to define parameters (e.g., length, special characters, upper/lower case, etc.) to create highly secure passwords.
+- **Password Breach Detection**:
+  - Integration with the **Have I Been Pwned** API to check if any stored passwords have been compromised in known data breaches.
+- **AES-256 Encryption & Bcrypt Hashing**:
+  - Passwords are encrypted using AES-256, a highly secure encryption standard, while the master password is hashed using bcrypt, offering resistance against brute-force attacks.
+
+### 2.2 Desired Features (Enhanced Usability)
+
+- **Theme Customization (Dark/Light Mode)**:
+  - Users can toggle between dark and light UI themes to match personal preference or environmental conditions.
 - **Password Strength Indicator**:
-  - Provide feedback on the strength of passwords when created or modified.
+  - Real-time analysis and feedback on password strength, encouraging users to generate stronger passwords.
 - **Search Functionality**:
-  - Search through stored passwords.
-- **Export/Import Encrypted Passwords**:
-  - Allow users to export and import encrypted passwords to/from external files.
+  - A search feature that allows users to easily locate stored passwords by filtering based on service names or metadata.
+- **Encrypted Import/Export**:
+  - Users can export their encrypted password database to a file for backup and import passwords from external sources, ensuring data portability.
 
-### 2.3 Aspirational Features (Extra)
+### 2.3 Aspirational Features (High-Value Additions)
+
 - **Biometric Authentication**:
-  - Add optional fingerprint or facial recognition for additional security.
-- **Multi-Device Syncing**:
-  - Sync passwords across multiple devices with secure encryption and optional cloud backup.
-- **Password Sharing**:
-  - Enable secure sharing of selected passwords with trusted individuals.
-- **Offline Access**:
-  - Ensure users can access saved passwords without an internet connection.
+  - Support for biometric login (fingerprint, facial recognition) in addition to USB and password authentication, offering added convenience without compromising security.
+- **Multi-Device Synchronization**:
+  - Secure synchronization of password data across multiple devices using end-to-end encryption. Cloud services can be optionally integrated but will not store plaintext passwords.
+- **Secure Password Sharing**:
+  - The ability to share selected passwords securely with trusted contacts through encrypted communication channels.
+- **Offline Mode**:
+  - Ensure full functionality without requiring an internet connection, allowing users to access stored passwords and generate new ones even when offline.
 
-## 3. Task Assignments
-Each team member is responsible for different aspects of the project:
+## 3. Task Breakdown & Assignments
 
-| Task                         | Assigned To | Description                                                                 |
-|------------------------------|-------------|-----------------------------------------------------------------------------|
-| Frontend Development (UI/UX)  | Person 1    | Design and develop the app interface using Electron.js. Includes Login View and Password Manager views. |
-| Backend Development           | Person 2    | Handle password encryption, storage, and API integration using Python.       |
-| USB Authentication Module     | Person 3    | Implement USB-based authentication with PyUSB and cryptography for decrypting the master password. |
-| API Integration               | Person 4    | Integrate the Have I Been Pwned API for password breach checking.            |
-| Password Generation           | Person 5    | Implement the customizable password generation feature.                      |
+Each aspect of the project is broken down into specialized tasks, assigned to specific developers to streamline the development process:
 
-## 4. Design
+| Task                           | Assigned To | Description                                                                                  |
+|---------------------------------|-------------|----------------------------------------------------------------------------------------------|
+| Frontend Development (UI/UX)    | Developer 1 | Build the user interface using Electron.js. Includes creating the login view, password manager, and generator views. |
+| Backend Development (Encryption) | Developer 2 | Handle password encryption, storage, and security protocols using Python and cryptographic libraries. |
+| USB Authentication Module       | Developer 3 | Implement USB-based authentication using PyUSB and integrate cryptographic decryption mechanisms. |
+| API Integration (Password Breach) | Developer 4 | Develop integration with the **Have I Been Pwned** API for breach detection and reporting.     |
+| Password Generation Logic       | Developer 5 | Implement customizable password generation logic, including validation for strength and randomness. |
 
-### 4.1 System Architecture
-The app follows a modular design, where each component (USB authentication, password management, encryption) is loosely coupled for easier maintenance and scalability.
+### 3.1 Quality Assurance
 
-(PIC of Architecture Design goes here)
+- **Test Automation**: Each developer is responsible for writing unit tests to cover their modules. Automated testing pipelines will be set up to ensure continuous integration and verification of all features.
+- **Security Audits**: Periodic internal security audits will be conducted on the encryption, authentication, and data management systems.
 
-### 4.2 Application Views
-- **Login View**:
-  - Users insert their USB drive and enter their master password to access stored passwords.
-  - Fields: USB status, password input, and login button.
-  
-- **Password Manager View**:
-  - Displays a list of stored passwords, allowing users to view, copy, delete, or check the status of each password (compromised or not).
+## 4. System Design
 
-- **Password Generator View**:
-  - Allows users to generate new passwords with customizable options like length and inclusion of special characters.
+### 4.1 Modular Architecture
 
-## 5. Database Schema
+The app will follow a modular architecture, ensuring each core component (authentication, encryption, password management) operates independently, promoting maintainability and scalability.
 
-The app uses an **SQLite** database for local storage of encrypted passwords.
+- **Authentication Module**: Handles login via USB and master password.
+- **Password Management Module**: CRUD operations for password storage.
+- **Encryption/Decryption Module**: Implements AES-256 for password encryption and bcrypt for hashing master passwords.
+- **Password Generation Module**: Generates strong passwords based on user preferences.
+- **API Module**: Communicates with the Have I Been Pwned API for breach detection.
 
-### Tables:
+![System Architecture](#)
+
+### 4.2 User Interface Views
+
+- **Login View**: Displays USB detection status, password input field, and login button.
+- **Password Manager**: Lists all stored passwords, with options to view, copy, delete, or check if compromised.
+- **Password Generator**: Allows customization of password length, character types, and displays a strength meter.
+- **Settings View**: Allows users to toggle between light/dark mode, enable biometric login, and configure import/export preferences.
+
+## 5. Database Design
+
+The local database uses **SQLite** to store encrypted password data. All sensitive data is encrypted at rest using AES-256.
+
+### Schema
+
 - **Users Table**:
-  - `id`: Integer (Primary Key)
-  - `username`: String
-  - `master_password_hash`: String (Hashed master password)
+  - `id` (Primary Key)
+  - `username` (Text)
+  - `master_password_hash` (Text)
   
 - **Passwords Table**:
-  - `id`: Integer (Primary Key)
-  - `user_id`: Integer (Foreign Key referencing Users Table)
-  - `password`: String (Encrypted password)
-  - `service`: String (The associated website or app)
-  - `is_compromised`: Boolean (Indicates if the password is flagged as compromised)
+  - `id` (Primary Key)
+  - `user_id` (Foreign Key, references Users Table)
+  - `service` (Text) – the associated website or app
+  - `encrypted_password` (Text)
+  - `is_compromised` (Boolean)
 
-## 6. Deployment
-The app will be deployed locally as a cross-platform desktop application using **Electron.js**.
+## 6. Development & Deployment
 
-- **Build Tools**:
-  - **NPM** for managing JavaScript dependencies.
-  - **Pip** for managing Python libraries.
+### 6.1 Development Environment
 
-### 6.1 Development Environments
-Each developer will set up their local environment using Electron.js and Python. **Docker** or **VMs** can be used to isolate development environments if needed.
+Each developer will use their local machine for development, running a stack that includes:
 
-### 6.2 Deployment Plan
-- The app will be packaged as an executable using Electron’s build process for cross-platform deployment on Windows, macOS, and Linux. 
+- **Electron.js** for the frontend.
+- **Python** with required cryptographic libraries (PyCryptodome, PyUSB).
+- **Docker** containers or virtual environments to ensure consistency across development setups.
 
-## 7. Goals
+### 6.2 Deployment Strategy
 
-### 7.1 Usability
-- Simulate user interaction by printing screens and testing the flow of the app.
+- The app will be bundled as a desktop application using **Electron's** cross-platform packaging tools for Windows, macOS, and Linux.
+- Automated scripts will be used to handle versioning and package generation.
   
-### 7.2 Efficiency
-- Make changes early in the development process, as these changes will be easier and less expensive than post-development changes.
+### 6.3 Testing and Continuous Integration
 
-## 8. Development Process
+- **Jenkins** or **GitHub Actions** will be used to implement a CI/CD pipeline that runs tests, builds the app, and deploys it to test environments.
+  
+## 7. Goals and Success Criteria
 
-This PRD will be updated as the project evolves. 
+### 7.1 Usability Goals
 
-Break down each feature into specific programming tasks/issues, assign them to team members, and track progress using GitHub. Repeat this process regularly to ensure all requirements are implemented efficiently.
+- The user interface should be intuitive and easy to navigate, providing clear feedback on password strength and security.
+- Performance benchmarks should include instant login (<1 second) and minimal delay for password generation (<500ms).
+
+### 7.2 Security Goals
+
+- All sensitive data must remain encrypted both in transit and at rest.
+- No plaintext passwords or sensitive information should ever be exposed in logs or memory dumps.
+
+## 8. Development Roadmap
+
+This document will evolve with the project. Key milestones and sprints will include:
+
+- **Sprint 1**: Basic UI and USB authentication.
+- **Sprint 2**: CRUD functionality for password management.
+- **Sprint 3**: Encryption and breach detection.
+- **Sprint 4**: Full feature testing, bug fixing, and security audits.
 
 ---
 
 **End of PRD**
-
-
-
