@@ -76,7 +76,7 @@ The app will follow a modular architecture, ensuring each core component (authen
 - **Password Generation Module**: Generates strong passwords based on user preferences.
 - **API Module**: Communicates with the Have I Been Pwned API for breach detection.
 
-![System Architecture](#)
+
 
 ### 4.2 User Interface Views
 
