@@ -34,6 +34,14 @@ function createWindow() {
             }
         });
     });
+
+    ipcMain.on('add-password', (event, data) => {
+        const pythonProcess = spawn('python', ['add_password.py', data.service, data.username, data.password]);
+        pythonProcess.stdout.on('data', (data) => {
+            console.log(`Password saved: ${data}`);
+        });
+    });
+    
 }
 
 app.whenReady().then(createWindow);
