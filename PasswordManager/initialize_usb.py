@@ -2,9 +2,8 @@ import sys
 import bcrypt
 import os
 
-def save_to_usb(hashed_password):
-    usb_drive_path = "/media/usb"  # Modify this based on the OS and USB mount path
-    file_path = os.path.join(usb_drive_path, "master_password.txt")
+def save_to_usb(usb_path, hashed_password):
+    file_path = os.path.join(usb_path, "master_password.txt")
     
     try:
         with open(file_path, "wb") as file:
@@ -13,16 +12,17 @@ def save_to_usb(hashed_password):
     except Exception as e:
         return f"Failed to initialize USB: {e}"
 
-def initialize_master_password(password):
+def initialize_master_password(usb_path, password):
     # Hash the password
     hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
     # Save to USB
-    return save_to_usb(hashed_password)
+    return save_to_usb(usb_path, hashed_password)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("No password provided.")
+    if len(sys.argv) < 3:
+        print("No USB path or password provided.")
     else:
-        password = sys.argv[1]
-        result = initialize_master_password(password)
+        usb_path = sys.argv[1]
+        password = sys.argv[2]
+        result = initialize_master_password(usb_path, password)
         print(result)

@@ -1,44 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Setup Master Password</title>
+    <meta charset="UTF-8">
+    <title>USB Setup</title>
 </head>
 <body>
-    <h1>Set Up Your Master Password</h1>
-    <div id="usb-status">Checking USB status...</div>
-    <form id="setup-form" style="display:none;">
-        <label>Enter New Master Password:</label>
-        <input type="password" id="new-master-password" required>
-        <button type="submit">Initialize USB</button>
-    </form>
+    <h1>USB Setup</h1>
+    <button id="select-usb">Select USB Drive</button>
+    <p id="usb-status">Checking USB status...</p>
+    <div id="password-setup" style="display: none;">
+        <h2>Enter Master Password</h2>
+        <input type="password" id="master-password" placeholder="Enter your master password" required>
+        <button id="submit-password">Submit</button>
+    </div>
+
     <script>
         const { ipcRenderer } = require('electron');
 
-        // Function to check USB status on page load
-        async function checkUSB() {
-            const usbStatus = await ipcRenderer.invoke('check-usb');
-            const statusDiv = document.getElementById('usb-status');
-            const setupForm = document.getElementById('setup-form');
-
-            if (usbStatus === 'USB Connected') {
-                statusDiv.innerText = "USB is connected. You can proceed.";
-                setupForm.style.display = 'block';
-            } else {
-                statusDiv.innerText = "Please connect a USB to continue.";
-            }
-        }
-
-        // Check USB connection when page loads
-        checkUSB();
-
-        document.getElementById('setup-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const masterPassword = document.getElementById('new-master-password').value;
-            ipcRenderer.send('initialize-usb', masterPassword);
+        document.getElementById('select-usb').addEventListener('click', () => {
+            ipcRenderer.send('select-usb-drive');
         });
 
-        ipcRenderer.on('setup-response', (event, response) => {
-            alert(response);
+        ipcRenderer.on('usb-selected', (event, path) => {
+            if (path) {
+                document.getElementById('usb-status').textContent = `USB Drive Selected: ${path}`;
+                document.getElementById('password-setup').style.display = 'block';
+            } else {
+                document.getElementById('usb-status').textContent = 'No USB Drive Selected. Please try again.';
+            }
+        });
+
+        ipcRenderer.on('usb-error', (event, error) => {
+            document.getElementById('usb-status').textContent = `Error: ${error}`;
+        });
+
+        document.getElementById('submit-password').addEventListener('click', () => {
+            const password = document.getElementById('master-password').value;
+            if (!password) {
+                alert('Please enter a master password before submitting.');
+                return;
+            }
+
+            ipcRenderer.send('initialize-usb', password);
+        });
+
+        ipcRenderer.on('setup-complete', (event, message) => {
+            alert(message);
+            ipcRenderer.send('load-login-page');
         });
     </script>
 </body>
