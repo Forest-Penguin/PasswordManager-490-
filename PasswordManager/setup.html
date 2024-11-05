@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup Master Password</title>
+</head>
+<body>
+    <h1>Set Up Your Master Password</h1>
+    <form id="setup-form">
+        <label>Enter New Master Password:</label>
+        <input type="password" id="new-master-password" required>
+        <button type="submit">Initialize USB</button>
+    </form>
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        document.getElementById('setup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const masterPassword = document.getElementById('new-master-password').value;
+            ipcRenderer.send('initialize-usb', masterPassword);
+        });
+
+        ipcRenderer.on('setup-response', (event, response) => {
+            alert(response);
+        });
+    </script>
+</body>
+</html>
