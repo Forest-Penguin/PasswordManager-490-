@@ -5,13 +5,31 @@
 </head>
 <body>
     <h1>Set Up Your Master Password</h1>
-    <form id="setup-form">
+    <div id="usb-status">Checking USB status...</div>
+    <form id="setup-form" style="display:none;">
         <label>Enter New Master Password:</label>
         <input type="password" id="new-master-password" required>
         <button type="submit">Initialize USB</button>
     </form>
     <script>
         const { ipcRenderer } = require('electron');
+
+        // Function to check USB status on page load
+        async function checkUSB() {
+            const usbStatus = await ipcRenderer.invoke('check-usb');
+            const statusDiv = document.getElementById('usb-status');
+            const setupForm = document.getElementById('setup-form');
+
+            if (usbStatus === 'USB Connected') {
+                statusDiv.innerText = "USB is connected. You can proceed.";
+                setupForm.style.display = 'block';
+            } else {
+                statusDiv.innerText = "Please connect a USB to continue.";
+            }
+        }
+
+        // Check USB connection when page loads
+        checkUSB();
 
         document.getElementById('setup-form').addEventListener('submit', (e) => {
             e.preventDefault();
