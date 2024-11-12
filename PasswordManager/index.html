@@ -1,27 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Password Manager Login</title>
+    <title>Login</title>
 </head>
 <body>
     <h1>Login</h1>
-    <form id="login-form">
-        <label>Master Password:</label>
-        <input type="password" id="master-password">
-        <button type="submit">Login</button>
-    </form>
+    <button id="login-button">Login</button>
+    <p id="auth-status"></p>
+
     <script>
         const { ipcRenderer } = require('electron');
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const masterPassword = document.getElementById('master-password').value;
-            ipcRenderer.send('authenticate', masterPassword);
+
+        document.getElementById('login-button').addEventListener('click', () => {
+            ipcRenderer.send('authenticate'); // Send the authenticate event without a password input
         });
 
-        ipcRenderer.on('auth-response', (event, response) => {
-            alert(response);
+        ipcRenderer.on('auth-response', (event, message) => {
+            document.getElementById('auth-status').textContent = message;
         });
     </script>
 </body>
 </html>
-
