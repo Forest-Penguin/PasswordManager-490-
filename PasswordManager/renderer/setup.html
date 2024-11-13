@@ -1,17 +1,25 @@
+<!-- renderer/setup.html -->
 <!DOCTYPE html>
 <html>
-<head><title>USB Setup</title></head>
+<head>
+    <title>USB Setup</title>
+</head>
 <body>
+    <h1>USB Setup</h1>
     <button id="select-usb">Select USB Drive</button>
     <input type="password" id="master-password" placeholder="Enter Master Password">
     <button id="submit-password">Submit</button>
+
     <script>
         const { ipcRenderer } = require('electron');
+
         document.getElementById('select-usb').onclick = () => ipcRenderer.send('select-usb-drive');
-        ipcRenderer.on('usb-selected', (_, path) => console.log(`USB selected: ${path}`));
+        ipcRenderer.on('usb-selected', (event, path) => alert(`USB selected: ${path}`));
+        ipcRenderer.on('usb-error', (event, message) => alert(message));
+
         document.getElementById('submit-password').onclick = () => {
             const password = document.getElementById('master-password').value;
-            ipcRenderer.send('initialize-usb', password);
+            ipcRenderer.send('initialize-usb', { password, usbPath });
         };
     </script>
 </body>
