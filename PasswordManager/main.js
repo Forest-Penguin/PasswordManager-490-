@@ -2,10 +2,9 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
-let win;
 
 function createWindow() {
-    win = new BrowserWindow({
+    const win = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -16,6 +15,7 @@ function createWindow() {
     win.loadFile(path.join(__dirname, 'renderer/setup.html'));
 }
 
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
@@ -25,10 +25,9 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('select-usb-drive', async (event) => {
-    const result = await dialog.showOpenDialog(win, { properties: ['openDirectory'] });
+    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
     if (!result.canceled && result.filePaths.length > 0) {
-        const usbPath = result.filePaths[0];
-        event.reply('usb-selected', usbPath);
+        event.reply('usb-selected', result.filePaths[0]);
     } else {
         event.reply('usb-error', 'No USB drive selected.');
     }

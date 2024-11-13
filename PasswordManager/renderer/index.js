@@ -13,6 +13,7 @@ document.getElementById('save-password').onclick = () => {
 };
 
 ipcRenderer.on('password-saved', (event, message) => alert(message));
+
 ipcRenderer.on('passwords-retrieved', (event, passwords) => {
     document.getElementById('passwords').innerHTML = passwords.map(p => `
         <div>
