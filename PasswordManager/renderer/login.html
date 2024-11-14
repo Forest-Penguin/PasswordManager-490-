@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    <button id="select-usb">Select USB Drive</button>
+    <p id="login-status"></p>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        // Trigger USB selection dialog for login
+        document.getElementById('select-usb').onclick = () => {
+            ipcRenderer.send('select-usb');
+        };
+
+        // Verify the USB selection path with the backend
+        ipcRenderer.on('usb-selected', (event, usbPath) => {
+            ipcRenderer.send('verify-usb', usbPath);
+        });
+
+        // Handle login success and navigate to the main password manager
+        ipcRenderer.on('login-success', () => {
+            location.href = 'password_manager.html';
+        });
+
+        // Display error messages for login failures
+        ipcRenderer.on('login-failed', (event, message) => {
+            document.getElementById('login-status').textContent = `Login failed: ${message}`;
+        });
+
+        ipcRenderer.on('usb-selection-failed', (event, message) => {
+            alert(`Error: ${message}`);
+        });
+    </script>
+</body>
+</html>

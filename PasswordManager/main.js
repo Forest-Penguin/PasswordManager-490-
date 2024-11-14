@@ -1,66 +1,81 @@
-// main.js
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { spawn } = require('child_process');
 const path = require('path');
+const { spawn } = require('child_process');
+const fs = require('fs');
 
-function createWindow() {
-    const win = new BrowserWindow({
+let mainWindow;
+const APP_DATA_PATH = path.join(app.getPath('userData'), 'appData.json');
+
+function createMainWindow() {
+    mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+            enableRemoteModule: false
         }
     });
-    win.loadFile(path.join(__dirname, 'renderer/setup.html'));
+
+    // Check if setup has been completed by looking for APP_DATA_PATH
+    const isSetupComplete = fs.existsSync(APP_DATA_PATH);
+    const initialPage = isSetupComplete ? 'login.html' : 'setup.html';
+    console.log(`Loading initial page: ${initialPage}`);  // Debug log
+    mainWindow.loadFile(path.join(__dirname, 'renderer', initialPage))
+        .catch(err => console.error(`Failed to load ${initialPage}:`, err));
 }
 
-
-app.whenReady().then(createWindow);
+// Run createMainWindow when the app is ready
+app.whenReady().then(createMainWindow);
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
+    if (process.platform !== 'darwin') app.quit();
+});
+
+// USB selection dialog handler
+ipcMain.on('select-usb', async (event) => {
+    console.log('USB selection triggered');  // Debug log
+    try {
+        const result = await dialog.showOpenDialog(mainWindow, { properties: ['openDirectory'] });
+        
+        if (result.canceled || result.filePaths.length === 0) {
+            event.reply('usb-selection-failed', 'No USB selected.');
+            return;
+        }
+        
+        const usbPath = result.filePaths[0];
+        console.log(`USB selected: ${usbPath}`);  // Debug log
+        event.reply('usb-selected', usbPath);
+    } catch (error) {
+        console.error('Error selecting USB:', error);
+        event.reply('usb-selection-failed', 'USB selection failed.');
     }
 });
 
-ipcMain.on('select-usb-drive', async (event) => {
-    const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
-    if (!result.canceled && result.filePaths.length > 0) {
-        event.reply('usb-selected', result.filePaths[0]);
-    } else {
-        event.reply('usb-error', 'No USB drive selected.');
-    }
-});
+// Set up USB with Python backend and show Continue button
+ipcMain.on('setup-usb', (event, usbPath) => {
+    console.log(`Setting up USB at path: ${usbPath}`);  // Debug log
 
-ipcMain.on('initialize-usb', (event, { password, usbPath }) => {
-    const python = spawn('python3', ['backend/password_manager.py', 'initialize_master', password, usbPath]);
+    // Using 'python' instead of 'python3' for Windows compatibility
+    const python = spawn('python', ['PasswordManager/backend/password_manager.py', 'setup', usbPath]);
+
     python.stdout.on('data', (data) => {
-        const response = JSON.parse(data.toString());
-        event.reply('usb-initialized', response.message);
+        const generatedPassword = data.toString().trim();
+        console.log(`Setup complete. Generated password: ${generatedPassword}`);  // Debug log
+        event.reply('setup-complete', generatedPassword);
+        
+        // Mark setup as complete in app data
+        fs.writeFileSync(APP_DATA_PATH, JSON.stringify({ setupComplete: true }));
+    });
+
+    python.stderr.on('data', (data) => {
+        console.error(`Setup error from Python: ${data}`);
+        event.reply('setup-failed', 'Failed to set up USB.');
     });
 });
 
-ipcMain.on('authenticate', (event, { password, usbPath }) => {
-    const python = spawn('python3', ['backend/password_manager.py', 'authenticate', password, usbPath]);
-    python.stdout.on('data', (data) => {
-        const response = JSON.parse(data.toString());
-        event.reply('auth-response', response.message);
-    });
-});
-
-ipcMain.on('add-password', (event, { service, username, password }) => {
-    const python = spawn('python3', ['backend/password_manager.py', 'add_password', service, username, password]);
-    python.stdout.on('data', (data) => {
-        const response = JSON.parse(data.toString());
-        event.reply('password-saved', response.message);
-    });
-});
-
-ipcMain.on('get-passwords', (event) => {
-    const python = spawn('python3', ['backend/password_manager.py', 'get_passwords']);
-    python.stdout.on('data', (data) => {
-        const passwords = JSON.parse(data.toString());
-        event.reply('passwords-retrieved', passwords);
-    });
+// Handle transition to the login page when the Continue button is clicked
+ipcMain.on('load-login-page', () => {
+    mainWindow.loadFile(path.join(__dirname, 'renderer', 'login.html'))
+        .catch(err => console.error('Failed to load login.html:', err));
 });

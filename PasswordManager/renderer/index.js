@@ -1,4 +1,3 @@
-// renderer/index.js
 const { ipcRenderer } = require('electron');
 
 document.getElementById('add-password').onclick = () => {
@@ -12,8 +11,10 @@ document.getElementById('save-password').onclick = () => {
     ipcRenderer.send('add-password', { service, username, password });
 };
 
+// Listen for password save confirmation
 ipcRenderer.on('password-saved', (event, message) => alert(message));
 
+// Listen for password retrieval and display
 ipcRenderer.on('passwords-retrieved', (event, passwords) => {
     document.getElementById('passwords').innerHTML = passwords.map(p => `
         <div>

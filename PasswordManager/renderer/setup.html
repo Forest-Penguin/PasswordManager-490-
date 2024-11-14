@@ -1,73 +1,47 @@
-<!-- renderer/setup.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>USB Setup</title>
+    <meta charset="UTF-8">
+    <title>Setup</title>
 </head>
 <body>
     <h1>USB Setup</h1>
     <button id="select-usb">Select USB Drive</button>
-    
-    <!-- Master Password Input Field -->
-    <input 
-        type="password" 
-        id="master-password" 
-        placeholder="Enter Master Password" 
-        style="margin-top: 20px; display: block;"
-    >
-
-    <button id="submit-password">Submit</button>
+    <p id="password-info"></p>
+    <button id="continue-button" style="display: none;">Continue to Login</button> <!-- Hidden initially -->
 
     <script>
-        const { ipcRenderer } = require('electron');
-        let usbPath = null;
-
-        // Select USB drive
+        // Trigger USB selection dialog
         document.getElementById('select-usb').onclick = () => {
-            ipcRenderer.send('select-usb-drive');
-            console.log("USB drive selection initiated.");
+            console.log('Select USB button clicked');  // Debug log
+            window.electronAPI.selectUSB();
         };
 
-        // Handle USB path response
-        ipcRenderer.on('usb-selected', (event, path) => {
-            usbPath = path;
-            alert(`USB selected: ${path}`);
-            console.log(`USB Path Set: ${usbPath}`);
+        // Handle USB path selection and initiate setup in Python backend
+        window.electronAPI.onUSBSelected((usbPath) => {
+            console.log(`USB path received: ${usbPath}`);  // Debug log
+            window.electronAPI.setupUSB(usbPath);
         });
 
-        ipcRenderer.on('usb-error', (event, message) => {
-            alert(message);
-            console.error(`USB Selection Error: ${message}`);
+        // Display the generated password and show the Continue button after setup
+        window.electronAPI.onSetupComplete((password) => {
+            document.getElementById('password-info').textContent = `Setup complete. Your generated password: ${password}`;
+            document.getElementById('continue-button').style.display = 'block'; // Show the continue button
         });
 
-        // Submit master password for USB initialization
-        document.getElementById('submit-password').onclick = () => {
-            const password = document.getElementById('master-password').value.trim();
+        // Error handling for USB selection and setup
+        window.electronAPI.onUSBSelectionFailed((message) => {
+            alert(`Error: ${message}`);
+        });
 
-            console.log("Submit button clicked.");
-            console.log(`Entered Password: ${password}`);
-            console.log(`USB Path: ${usbPath}`);
+        window.electronAPI.onSetupFailed((message) => {
+            alert(`Setup failed: ${message}`);
+        });
 
-            if (!usbPath) {
-                alert("Please select a USB drive first.");
-                return;
-            }
-            
-            if (!password) {
-                alert("Please enter a master password.");
-                return;
-            }
-
-            // Send data to backend for USB initialization
-            ipcRenderer.send('initialize-usb', { password, usbPath });
-            console.log("Master password and USB path sent to backend.");
+        // Trigger page transition to login on Continue button click
+        document.getElementById('continue-button').onclick = () => {
+            window.electronAPI.loadLoginPage();
         };
-
-        // Confirmation of USB initialization
-        ipcRenderer.on('usb-initialized', (event, message) => {
-            alert(message);
-            console.log(`Initialization Message: ${message}`);
-        });
     </script>
 </body>
 </html>
