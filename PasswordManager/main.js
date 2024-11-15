@@ -1,3 +1,8 @@
+// this lets you (on windows) run scripts. (only for that session)
+//Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+//electron-forge start (this lets you run a preview of the app with functionalities whithout having to create a .exe file)
+
+
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
