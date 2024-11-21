@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
 const fs = require('fs');
+const usbDetect = require('usb-detection');
 
 let mainWindow;
 const APP_DATA_PATH = path.join(app.getPath('userData'), 'appData.json');
@@ -17,14 +18,31 @@ function createMainWindow() {
         }
     });
 
-    // Load appropriate page based on setup completion
+    // Load the appropriate page based on setup completion
     const isSetupComplete = fs.existsSync(APP_DATA_PATH);
     const initialPage = isSetupComplete ? 'login.html' : 'setup.html';
     mainWindow.loadFile(path.join(__dirname, 'renderer', initialPage))
         .catch(err => console.error(`Failed to load ${initialPage}:`, err));
 }
 
-app.whenReady().then(createMainWindow);
+app.whenReady().then(() => {
+    createMainWindow();
+
+    // Start monitoring USB devices
+    usbDetect.startMonitoring();
+
+    // USB detection events
+    usbDetect.on('add', (device) => {
+        const usbPath = `/media/${device.manufacturer}/${device.deviceName}`; // Adjust logic for your OS
+        console.log('USB device added:', usbPath);
+        mainWindow.webContents.send('usb-detected', usbPath);
+    });
+
+    usbDetect.on('remove', (device) => {
+        console.log('USB device removed:', device);
+        mainWindow.webContents.send('usb-removed', 'A USB drive was disconnected.');
+    });
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
@@ -34,12 +52,12 @@ app.on('window-all-closed', () => {
 ipcMain.on('select-usb', async (event) => {
     try {
         const result = await dialog.showOpenDialog(mainWindow, { properties: ['openDirectory'] });
-        
+
         if (result.canceled || result.filePaths.length === 0) {
             event.reply('usb-selection-failed', 'No USB selected.');
             return;
         }
-        
+
         const usbPath = result.filePaths[0];
         event.reply('usb-selected', usbPath);
     } catch (error) {
