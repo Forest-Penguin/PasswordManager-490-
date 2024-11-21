@@ -22,7 +22,7 @@ function createMainWindow() {
         }
     });
 
-    // Load appropriate page based on setup completion
+    // Load the appropriate page based on setup completion
     const isSetupComplete = fs.existsSync(APP_DATA_PATH);
     const initialPage = isSetupComplete ? 'login.html' : 'setup.html';
     mainWindow.loadFile(path.join(RENDERER_PATH, initialPage))
@@ -48,10 +48,12 @@ ipcMain.on('select-usb', async (event) => {
     try {
         const result = await dialog.showOpenDialog(mainWindow, { properties: ['openDirectory'] });
 
+
         if (result.canceled || result.filePaths.length === 0) {
             event.reply('usb-selection-failed', 'No USB selected.');
             return;
         }
+
 
         const usbPath = result.filePaths[0];
         event.reply('usb-selected', usbPath);
