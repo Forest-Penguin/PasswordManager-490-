@@ -1,4 +1,3 @@
-// preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -24,5 +23,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     editPassword: (updateData) => ipcRenderer.send('edit-password', updateData),
     deletePassword: (id) => ipcRenderer.send('delete-password', id),
     generatePassword: (callback) => ipcRenderer.invoke('generate-password').then(callback),
-    onPasswordChange: (callback) => ipcRenderer.on('password-changed', callback)
+    onPasswordChange: (callback) => ipcRenderer.on('password-changed', callback),
+
+    // Check if a password has been pwned
+    checkPasswordPwned: (password) => ipcRenderer.invoke('check-password-pwned', password)
 });

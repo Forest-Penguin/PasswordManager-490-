@@ -4,10 +4,13 @@ import json
 import hashlib
 import random
 import string
+import requests  # Added for API calls
 
 # File paths
 PASSWORD_FILE_PATH = 'password_store.json'  # Local JSON file for storing passwords
 APP_DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'userData', 'appData.json')
+
+HIBP_API_URL = "https://api.pwnedpasswords.com/range/"
 
 # Setup and Verification Functions
 
@@ -88,11 +91,13 @@ def add_password(data):
 def edit_password(id, new_password):
     """Edits an existing password entry in PASSWORD_FILE_PATH by ID."""
     passwords = fetch_passwords()
+    print(f"Editing password ID: {id}, New Password: {new_password}")  # Debug log
     for pwd in passwords:
-        if pwd['id'] == id:
-            pwd['password'] = new_password
+        if pwd['id'] == id:  # Match the ID
+            pwd['password'] = new_password  # Update password
             break
     save_passwords(passwords)
+
 
 def delete_password(id):
     """Deletes a password entry from PASSWORD_FILE_PATH by ID."""
@@ -103,6 +108,38 @@ def save_passwords(passwords):
     """Saves the password list to PASSWORD_FILE_PATH."""
     with open(PASSWORD_FILE_PATH, 'w') as f:
         json.dump(passwords, f)
+
+
+
+# Have I Been Pwned API Integration
+
+def check_password_pwned(password):
+    """
+    Checks if a password has been exposed in a data breach using the Have I Been Pwned API.
+    The API uses the k-Anonymity model to protect privacy.
+    """
+    # Hash the password using SHA-1
+    sha1_password = hashlib.sha1(password.encode()).hexdigest().upper()
+    prefix, suffix = sha1_password[:5], sha1_password[5:]
+
+    # Query the API with the first 5 characters of the hash
+    response = requests.get(f"{HIBP_API_URL}{prefix}")
+
+    if response.status_code != 200:
+        print(f"Error fetching data from HIBP API: {response.status_code}")
+        sys.stdout.flush()
+        return
+
+    # Check if the suffix exists in the response
+    hashes = (line.split(":") for line in response.text.splitlines())
+    for hash_suffix, count in hashes:
+        if suffix == hash_suffix:
+            print("True")  # Password is pwned
+            sys.stdout.flush()
+            return
+
+    print("False")  # Password is safe
+    sys.stdout.flush()
 
 # Command Line Interface for Electron Backend Integration
 
@@ -128,3 +165,6 @@ if __name__ == "__main__":
         delete_password(id)
     elif command == 'generate':
         print(generate_password())
+    elif command == 'check-pwned':
+        password = sys.argv[2]
+        check_password_pwned(password)
