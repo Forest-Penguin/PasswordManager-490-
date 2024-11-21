@@ -30,24 +30,7 @@ function createMainWindow() {
 }
 
 
-    // Start monitoring USB devices
-    usbDetect.startMonitoring();
 
-    // USB detection events
-    usbDetect.on('add', (device) => {
-        const usbPath = `/media/${device.manufacturer}/${device.deviceName}`; // Adjust logic for your OS
-        console.log('USB device added:', usbPath);
-        mainWindow.webContents.send('usb-detected', usbPath);
-    });
-
-    usbDetect.on('remove', (device) => {
-        console.log('USB device removed:', device);
-        mainWindow.webContents.send('usb-removed', 'A USB drive was disconnected.');
-    });
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
-});
 
 
 
