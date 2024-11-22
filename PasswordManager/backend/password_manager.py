@@ -98,7 +98,6 @@ def edit_password(id, new_password):
             break
     save_passwords(passwords)
 
-
 def delete_password(id):
     """Deletes a password entry from PASSWORD_FILE_PATH by ID."""
     passwords = [pwd for pwd in fetch_passwords() if pwd['id'] != id]
@@ -108,8 +107,6 @@ def save_passwords(passwords):
     """Saves the password list to PASSWORD_FILE_PATH."""
     with open(PASSWORD_FILE_PATH, 'w') as f:
         json.dump(passwords, f)
-
-
 
 # Have I Been Pwned API Integration
 
@@ -123,7 +120,8 @@ def check_password_pwned(password):
     prefix, suffix = sha1_password[:5], sha1_password[5:]
 
     # Query the API with the first 5 characters of the hash
-    response = requests.get(f"{HIBP_API_URL}{prefix}")
+    url = f"{HIBP_API_URL}{prefix}"
+    response = requests.get(url)
 
     if response.status_code != 200:
         print(f"Error fetching data from HIBP API: {response.status_code}")
