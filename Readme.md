@@ -1,96 +1,169 @@
-# Local Password Manager and Generator
 
-## Overview
-The **Local Password Manager and Generator** is a desktop application designed to securely generate and manage passwords. It emphasizes user privacy by storing all sensitive data locally and leveraging strong encryption. The project is implemented using **Electron.js** for the frontend and **Python** for backend operations, incorporating hardware-based authentication (USB) and password breach checks via the **Have I Been Pwned** API.
+# Password Manager 490
 
-## Features
+This is a local password manager application designed to securely store, generate, and verify passwords using USB-based authentication. The app is built using Python for backend functionality and Electron for the frontend.
 
-### Core Features
-- **USB Authentication and Master Password**: Multi-factor authentication using a USB device and a master password for accessing the password manager.
-- **Password Management**: Users can create, read, update, and delete passwords securely. All passwords are encrypted using **AES-256** before being stored.
-- **Password Generator**: Customizable password generation, including length, characters, and symbols.
-- **Password Breach Check**: Integration with the **Have I Been Pwned** API to determine if a password has been compromised.
+---
 
-### Additional Features
-- **Theme Customization**: Light/Dark mode for user preferences.
-- **Password Strength Indicator**: Real-time analysis and feedback on password strength.
-- **Encrypted Import/Export**: Ability to back up and restore the password database.
+## External Requirements
 
-## Technologies Used
-- **Frontend**: **Electron.js** with JavaScript for the UI.
-- **Backend**: **Python** for core operations, including encryption, USB-based authentication, and API integration.
-- **Encryption**: **AES-256** for passwords and **bcrypt** for hashing the master password.
-- **Database**: **SQLite** is used to store encrypted password data locally.
-- **Libraries**:
-  - **Cryptography** (AES-256)
-  - **PyUSB** for USB interactions
-  - **requests** for API calls to **Have I Been Pwned**
+### Prerequisites:
 
-## Setup Instructions
+1. **Node.js**:
+   - Download and install Node.js from [https://nodejs.org/](https://nodejs.org/).
+   - Ensure `npm` (Node Package Manager) is included.
 
-### Prerequisites
-- **Node.js** and **npm**: Required for **Electron.js**.
-- **Python**: Install Python 3 and required libraries listed in `requirements.txt`.
-- **Electron Forge**: Used for packaging the application.
+2. **Python**:
+   - Install Python 3.x from [https://www.python.org/](https://www.python.org/).
+   - Ensure `pip` (Python Package Installer) is available.
 
-### Installation
+3. **SQLite3**:
+   - Pre-installed with most Python distributions.
+   - If not available, follow installation instructions for your OS: [SQLite Download](https://www.sqlite.org/download.html).
+
+4. **USB Drive**:
+   - A USB drive is required for the authentication process.
+
+---
+
+### Dependencies:
+
+#### Python Dependencies:
+The following Python modules are required and should be installed via `pip`:
+1. **requests**:
+   - Used for integrating with the Have I Been Pwned API.
+   - Install using:
+     ```bash
+     pip install requests
+     ```
+
+2. **cryptography**:
+   - Used for AES-256 encryption of sensitive data.
+   - Install using:
+     ```bash
+     pip install cryptography
+     ```
+
+3. **pyusb**:
+   - Used for USB device interactions.
+   - Install using:
+     ```bash
+     pip install pyusb
+     ```
+
+#### Node.js Dependencies:
+These dependencies are automatically installed by running `npm install`:
+1. **bcrypt**:
+   - For hashing passwords.
+2. **crypto**:
+   - Provides cryptographic functionality for secure operations.
+3. **electron**:
+   - Framework for building cross-platform desktop applications.
+4. **electron-squirrel-startup**:
+   - Supports auto-update and startup for Windows.
+5. **sqlite3**:
+   - Provides SQLite database support.
+
+#### Development Dependencies (Installed via `npm install`):
+1. **@electron-forge/cli**: CLI for Electron Forge.
+2. **@electron-forge/maker-deb**: Creates distributable packages for Linux (Debian).
+3. **@electron-forge/maker-rpm**: Creates distributable packages for Linux (RPM).
+4. **@electron-forge/maker-squirrel**: Creates Windows installers.
+5. **@electron-forge/maker-zip**: Generates ZIP packages for distribution.
+6. **@electron-forge/plugin-auto-unpack-natives**: Automatically unpacks native dependencies.
+7. **@electron-forge/plugin-fuses**: Manages Electron fuses.
+
+---
+
+## Setup
+
 1. **Clone the Repository**:
    ```bash
-   git clone [repository-url]
+   git clone <repository_url>
+   cd PasswordManager-490
    ```
 
-2. **Install Frontend Dependencies**:
+2. **Install Node.js Dependencies**:
+   Run this command to install all Node.js dependencies:
    ```bash
-   cd path/to/project
    npm install
    ```
 
-3. **Install Backend Dependencies**:
+3. **Install Python Dependencies**:
+   Install the required Python modules:
    ```bash
-   pip install -r requirements.txt
+   pip install requests cryptography pyusb
    ```
 
-4. **Run the Application**:
-   ```bash
-   npm start
-   ```
+4. **Configure the USB Device**:
+   - Run the application using `npm start`.
+   - Use the `setup.html` page to select a USB drive for authentication. A unique hashed password will be generated and saved on the USB and locally.
 
-### Usage
-- **Initial Setup**: Insert a USB and follow the on-screen instructions to set up the master password.
-- **Password Management**: Once logged in, users can add, edit, delete, or check passwords.
-- **Password Breach Check**: Use the "Check Password Safety" button to verify a password against known data breaches.
+---
 
-## Folder Structure
-- **backend/password\_manager.py**: Manages password encryption, USB authentication, and interactions with **Have I Been Pwned**.
-- **frontend/main.js**: Handles the Electron window and communication with the backend.
-- **frontend/preload.js**: Exposes API calls to the rendered pages.
-- **frontend/renderer**:
-  - **login.html**: USB-based login page.
-  - **password\_manager.html**: Main interface for managing passwords.
-  - **setup.html**: Initial setup page.
+## Running
 
-## Security Considerations
-- **Data Protection**: Passwords are encrypted using **AES-256**, while the master password is hashed using **bcrypt**.
-- **USB Authentication**: Ensures that only authorized users can access stored passwords.
-- **Secure Communication**: API requests (e.g., **Have I Been Pwned**) use **HTTPS** to protect data in transit.
+### Start the Application:
+To launch the app:
+```bash
+npm start
+```
 
-## Known Issues and Recommendations
-### Issues
-1. **PyUSB Integration**: The documentation mentions **PyUSB**, but the current implementation relies on manual USB selection dialogs. Consider updating the USB interaction module to automatically detect USB insertion.
-2. **Encryption Scope**: Ensure that all stored data is encrypted, including user metadata. The current backend script (`password_manager.py`) does not reference database encryption explicitly, which conflicts with the **PRD** and **Security Issues** documents.
-3. **API Attribution**: Confirm that proper attribution is included for **Have I Been Pwned** usage in the UI and documentation, as specified in the **Legal Issues** document.
+---
 
-### Recommendations
-- **USB Integration Enhancement**: Update USB detection to provide a smoother user experience using **PyUSB** or an equivalent tool.
-- **Security Best Practices**: Implement regular checks to verify that the AES-256 encryption and hashing operations comply with best practices.
+## Deployment
 
-## License
-This project uses third-party libraries under **MIT**, **Apache**, and **BSD** licenses. Make sure to comply with all licensing requirements for redistribution.
+### Create Installers:
+To generate distributable installers for Windows:
+```bash
+npm run make
+```
+The output files will be available in the `out/make` directory.
 
-## Contributors
-- **Project Manager**: Albert
-- **Editor**: Aldrind
-- **Database Developer**: Ramita
-- **Application Developer**: Mirta
-- **Lead Architect**: Monte
+---
 
+## Testing
+
+### Manual Testing:
+1. Launch the app with `npm start`.
+2. Test USB setup via `setup.html`.
+3. Verify login functionality and password management on `login.html` and `password_manager.html`.
+
+### Automated Testing:
+Automated testing is not implemented yet. Consider using tools like Jest (for Node.js) or pytest (for Python) for future enhancements.
+
+---
+
+## Dependencies Overview
+
+### Python:
+- **requests**: For API integration.
+- **cryptography**: For AES-256 encryption.
+- **pyusb**: For USB interactions.
+
+Install them using:
+```bash
+pip install requests cryptography pyusb
+```
+
+### Node.js:
+- Installed automatically via:
+  ```bash
+  npm install
+  ```
+
+---
+
+## Authors
+
+- **Aldrind Reyes**  
+  Email: [aldrind.reyes-reyes.799@my.csun.edu]
+- **Albert Atshemyan**  
+  Email: [your-email@example.com]
+- **Mirta Mazariego**  
+  Email: [mirta.mazariego.717@my.csun.edu]
+- **Ramita Batchu**  
+  Email: [ramita.batchu.865@my.csun.edu]
+- **Monte Tamazyan**  
+  Email: [your-email@example.com]
+---
