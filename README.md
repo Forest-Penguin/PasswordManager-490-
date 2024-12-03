@@ -130,7 +130,7 @@ The output files will be available in the `out/make` directory.
 3. Verify login functionality and password management on `login.html` and `password_manager.html`.
 
 ### Automated Testing:
-Automated testing is not implemented yet. Consider using tools like Jest (for Node.js) or pytest (for Python) for future enhancements.
+Automated testing has not been implemented yet. For future enhancements, consider using tools like Jest (for Node.js) or pytest (for Python).
 
 ---
 
