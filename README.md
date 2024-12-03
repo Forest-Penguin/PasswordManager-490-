@@ -165,5 +165,5 @@ pip install requests cryptography pyusb
 - **Ramita Batchu**  
   Email: [ramita.batchu.865@my.csun.edu]
 - **Monte Tamazyan**  
-  Email: [your-email@example.com]
+  Email: [monte.tamazyan.381@my.csun.edu]
 ---
