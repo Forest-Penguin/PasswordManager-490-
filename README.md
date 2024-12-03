@@ -159,7 +159,7 @@ pip install requests cryptography pyusb
 - **Aldrind Reyes**  
   Email: [aldrind.reyes-reyes.799@my.csun.edu]
 - **Albert Atshemyan**  
-  Email: [your-email@example.com]
+  Email: [albert.atshemyan.697@my.csun.edu]
 - **Mirta Mazariego**  
   Email: [mirta.mazariego.717@my.csun.edu]
 - **Ramita Batchu**  
